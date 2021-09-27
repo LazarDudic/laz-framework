@@ -50,12 +50,12 @@ class Route
         return (boolean) preg_match($this->pattern, $url);
     }
 
-    public function getController()
+    public function getControllerName()
     {
         return $this->controller;
     }
 
-    public function getMethod()
+    public function getMethodName()
     {
         return $this->method;
     }

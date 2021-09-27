@@ -4,8 +4,14 @@ namespace App\Controllers;
 
 class Controller
 {
-    public static function add()
+    private $dbc;
+
+    public function __construct($dbc)
     {
-        echo 'ajde';
+        $this->dbc = $dbc;
+    }
+    public function add()
+    {
+        return view('404', compact('marko'));
     }
 }
