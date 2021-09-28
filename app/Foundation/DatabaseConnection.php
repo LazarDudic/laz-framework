@@ -13,8 +13,12 @@ class DatabaseConnection {
     {
         if (self::$instance == null)
         {
-            self::$instance = new \PDO("mysql:host=".$_ENV['DB_HOST'].';dbname='.$_ENV['DB_NAME'], 
-                $_ENV['DB_USERNAME'],  $_ENV['DB_PASSWORD']);
+            try {
+                self::$instance = new \PDO("mysql:host=".$_ENV['DB_HOST'].';dbname='.$_ENV['DB_NAME'], $_ENV['DB_USERNAME'],  $_ENV['DB_PASSWORD']);
+                self::$instance->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_SILENT); 
+            } catch(\PDOException $error) {
+                echo $error->getMessage();
+            }
         }
    
         return self::$instance;

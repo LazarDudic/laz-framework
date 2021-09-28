@@ -1,5 +1,6 @@
 <?php
 
+use Twig\Cache\CacheInterface;
 
 require_once __DIR__.'/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__.'/../');
@@ -22,6 +23,6 @@ $response = call_user_func_array([$controler, $route->getMethodName()], $route->
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__.'/../views/');
 $twig = new \Twig\Environment($loader, [
-    'cache' =>  __DIR__.'/../storage/twig-cache',
+    // 'cache' =>  __DIR__.'/../storage/twig-cache',
 ]);
 echo $twig->render($response['path'], $response['data']);
