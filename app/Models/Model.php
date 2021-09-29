@@ -20,7 +20,7 @@ abstract class Model
         $stmt->execute();
         return $stmt->fetchAll(\PDO::FETCH_CLASS);
     }
-    public function findById($id)
+    public function findById(int $id)
     {
         $sql = 'SELECT * FROM '.$this->getTableName().' WHERE id = ?';
         $stmt = $this->dbc->prepare($sql);
@@ -29,9 +29,9 @@ abstract class Model
         return $res ? $stmt->fetch() : null;
     }
 
-    public function store($data)
+    public function store(array $data)
     {
-        $sql = 'INSERT INTO '.$this->getTableName().$this->getColumnsAndValuesQuery($data);
+        $sql = $this->getStoreQuery($data);
         $stmt = $this->dbc->prepare($sql);
 
         $res = $stmt->execute(array_values($data));
@@ -39,6 +39,28 @@ abstract class Model
             throw new Exception($stmt->errorInfo()[2]);
         }
         return $this->findById($this->dbc->lastInsertId());
+    }
+
+    public function update(array $column, array $data)
+    {
+        $sql = $this->getUpdateQuery($column, $data);
+        $stmt = $this->dbc->prepare($sql);
+        $res = $stmt->execute(array_merge(array_values($data), array_values($column)));
+        if(!$res) {
+            throw new Exception($stmt->errorInfo()[2]);
+        }
+        return true;
+    }
+
+    public function delete(array $column)
+    {
+        $sql = $this->getDeleteQuery($column);
+        $stmt = $this->dbc->prepare($sql);
+        $res = $stmt->execute(array_values($column));
+        if(!$res) {
+            throw new Exception($stmt->errorInfo()[2]);
+        }
+        return true;
     }
 
     protected function getTableName()
@@ -49,22 +71,52 @@ abstract class Model
         return $this->table;
     }
 
-    private function getColumnsAndValuesQuery($data)
+    private function getStoreQuery(array $data)
     {
-        if (is_null($this->columns)) {
-            throw new \Exception('Columns property in '.get_class($this));
-        }
         $columns = array_keys($data);
-        $query = ' (';
+        $query = 'INSERT INTO '.$this->getTableName().' (';
         foreach ($columns as $column) {
-            if (!in_array($column, $this->columns)) {
-                throw new \Exception('Column '.$column.' does not exists in '.get_class($this));
-            }
+            $this->validateColumn($column);
             $query .= '`'.$column.'`, ';
         }
 
         $query = substr($query, 0, -2) . ') VALUES (' . str_repeat('?,', count($columns));
         $query = substr($query, 0, -1) . ')';
         return $query;
+    }
+
+    private function getUpdateQuery(array $where, array $data)
+    {
+        $whereColumn = array_keys($where)[0];
+
+        $columns = array_keys($data);
+        $query = 'UPDATE '.$this->getTableName().' SET ';
+        foreach ($columns as $column) {
+            $this->validateColumn($column);
+            $query .= '`'.$column.'`=?, ';
+        }
+
+        $query = substr($query, 0, -2) . ' WHERE '.$whereColumn.'=?';
+        return $query;
+    }
+
+    private function getDeleteQuery(array $column)
+    {
+        $whereColumn = array_keys($column)[0];
+        $query = 'DELETE FROM '.$this->getTableName().' WHERE '.$whereColumn.'=?';
+        return $query;
+    }
+
+    private function validateColumn($column)
+    {
+        if (is_null($this->columns)) {
+            throw new \Exception('Columns property does not exists in '.get_class($this));
+        }
+
+        if (!in_array($column, $this->columns)) {
+            throw new \Exception('Column '.$column.' does not exists in '.get_class($this));
+        }
+
+        return $column;
     }
 }
