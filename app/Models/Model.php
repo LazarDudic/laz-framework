@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use App\Foundation\Database\DatabaseConnection;
 
 abstract class Model
 {
@@ -10,9 +11,9 @@ abstract class Model
     protected $table = null;
     protected $columns = null;
 
-    public function __construct($dbc)
+    public function __construct(DatabaseConnection $db)
     {
-        $this->dbc = $dbc;
+        $this->dbc = $db->getConnection();
     }
 
     public function all()

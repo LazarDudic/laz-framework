@@ -1,13 +1,15 @@
 <?php
 namespace App\Controllers;
 
+use App\Foundation\Database\DatabaseConnection;
+
 abstract class Controller
 {
-    protected $dbc;
+    protected $db;
 
-    public function __construct($dbc)
+    public function __construct(DatabaseConnection $db)
     {
-        $this->dbc = $dbc;
+        $this->db = $db;
     }
 
 }

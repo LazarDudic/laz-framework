@@ -4,9 +4,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
-$dbc = App\Foundation\Database\DatabaseConnection::getConnection();
+$container = require_once __DIR__ . '/../bootstrap/container.php';
 $routes = require_once __DIR__ . '/../routes/web.php';
-
 $router = new App\Foundation\Route\Router($routes);
 
 try {
@@ -16,7 +15,7 @@ try {
 }
 
 $controlerName = $route->getControllerName();
-$controler = new $controlerName($dbc);
+$controler = $container->make($controlerName);
 $response = call_user_func_array([$controler, $route->getMethodName()], $route->getArguments($_SERVER['REQUEST_URI']));
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../views/');
@@ -24,3 +23,4 @@ $twig = new \Twig\Environment($loader, [
     // 'cache' =>  __DIR__.'/../storage/twig-cache',
 ]);
 echo $twig->render($response['path'], $response['data']);
+

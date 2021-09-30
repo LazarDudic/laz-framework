@@ -18,3 +18,20 @@ if (!function_exists('view')) {
         ];
     }
 }
+
+if (!function_exists('pd')) {
+    function pd($data)
+    {
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
+        die;
+    }
+}
+
+if (!function_exists('dd')) {
+    function dd($data)
+    {
+        die(var_dump($data));
+    }
+}
