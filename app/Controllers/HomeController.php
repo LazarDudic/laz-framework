@@ -1,11 +1,10 @@
 <?php
-namespace App\Controllers;
 
-use App\Models\User;
+namespace App\Controllers;
 
 class HomeController extends Controller
 {
-    public function show() 
+    public function show()
     {
         return view('home');
     }

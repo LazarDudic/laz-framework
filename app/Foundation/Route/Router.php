@@ -1,7 +1,6 @@
 <?php
-namespace App\Foundation;
 
-use Exception;
+namespace App\Foundation\Route;
 
 class Router
 {
@@ -11,7 +10,7 @@ class Router
     {
         $this->routes = $routes;
     }
-    public function getMatchedRoute($url, $requestMethod) 
+    public function getMatchedRoute($url, $requestMethod)
     {
         foreach ($this->routes as $route) {
             if ($route->match($url, $requestMethod) === true) {
@@ -19,6 +18,6 @@ class Router
             }
         }
 
-        throw new Exception('Route not Found');
+        throw new \Exception('Route not Found');
     }
 }
