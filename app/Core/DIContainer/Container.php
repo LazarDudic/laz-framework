@@ -1,5 +1,7 @@
 <?php
-namespace App\Foundation\DIContainer;
+namespace App\Core\DIContainer;
+
+use App\Controllers\Controller;
 
 
 class Container
@@ -32,14 +34,31 @@ class Container
         return $reflect->newInstanceArgs($instances);
     }
 
-    protected function getParameters($constructor)
+    public function callControllerMethod(Controller $controller, $method, $arguments) 
     {
-        $parameters = $constructor->getParameters();
+        $abstractArguments = $this->getMethodAbstractArguments($controller, $method, $arguments);
+        return call_user_func_array([$controller, $method], array_merge($arguments, $abstractArguments));
+    }
+
+    public function getMethodAbstractArguments($abstract, $method)
+    {
+        $reflect = new \ReflectionClass($abstract);
+        $method = $reflect->getMethod($method);
+
+        return $this->getParameters($method);
+    }
+
+    protected function getParameters($method)
+    {
+        $parameters = $method->getParameters();
 
         $dependencies = [];
         foreach ($parameters as $parameter) {
-            $dependencies[] = $this->make($parameter->getClass()->name);
+            if($parameter->getClass()) {
+                $dependencies[] = $this->make($parameter->getClass()->name);
+            }
         }
         return $dependencies;
     }
+
 }

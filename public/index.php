@@ -6,17 +6,21 @@ $dotenv->load();
 
 $container = require_once __DIR__ . '/../bootstrap/container.php';
 $routes = require_once __DIR__ . '/../routes/web.php';
-$router = new App\Foundation\Route\Router($routes);
-
+$router = new App\Core\Route\Router($routes);
+$path = strtok($_SERVER["REQUEST_URI"], '?');
 try {
-    $route = $router->getMatchedRoute($_SERVER['REQUEST_URI'], $_SERVER['REQUEST_METHOD']);
+    $route = $router->getMatchedRoute($path, $_SERVER['REQUEST_METHOD']);
 } catch (\Exception $e) {
     return require_once __DIR__ . '/../views/404.twig';
 }
 
 $controlerName = $route->getControllerName();
 $controler = $container->make($controlerName);
-$response = call_user_func_array([$controler, $route->getMethodName()], $route->getArguments($_SERVER['REQUEST_URI']));
+$response = $container->callControllerMethod(
+    $controler, 
+    $route->getMethodName(),
+    $route->getArguments($path)
+);
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../views/');
 $twig = new \Twig\Environment($loader, [

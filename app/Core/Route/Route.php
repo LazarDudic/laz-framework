@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Foundation\Route;
+namespace App\Core\Route;
 
 class Route
 {
@@ -64,6 +64,11 @@ class Route
     public function getArguments($url)
     {
         preg_match_all($this->pattern, $url, $matches);
-        return $matches[1] ?? [];
+        unset($matches[0]);
+        $formatMatches = [];
+        foreach ($matches as $key => $match) {
+            $formatMatches[$key] = $match[0];
+        }
+        return $formatMatches;
     }
 }

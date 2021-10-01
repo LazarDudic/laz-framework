@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Exception;
-use App\Foundation\Database\DatabaseConnection;
+use App\Core\Database\DatabaseConnection;
 
 abstract class Model
 {
