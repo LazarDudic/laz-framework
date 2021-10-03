@@ -2,6 +2,8 @@
 
 namespace App\Core\Route;
 
+use App\Core\Exceptions\RouteNotFound;
+
 class Router
 {
     private $routes;
@@ -18,6 +20,6 @@ class Router
             }
         }
 
-        throw new \Exception('Route not Found');
+        throw new RouteNotFound('Route not Found.');
     }
 }

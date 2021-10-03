@@ -1,7 +1,7 @@
 <?php
 
 use App\Controllers\HomeController;
-use App\Foundation\Route\Route;
+use App\Core\Route\Route;
 
 return [
     Route::get('/', HomeController::class, 'show'),

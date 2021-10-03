@@ -1,8 +1,7 @@
 <?php
 
-use App\Foundation\Database\DatabaseConnection;
-use App\Foundation\DIContainer\Container;
-use App\Models\User;
+use App\Core\DIContainer\Container;
+use App\Core\Database\DatabaseConnection;
 
 $container = new Container();
 

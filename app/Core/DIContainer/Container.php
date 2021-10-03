@@ -34,12 +34,6 @@ class Container
         return $reflect->newInstanceArgs($instances);
     }
 
-    public function callControllerMethod(Controller $controller, $method, $arguments) 
-    {
-        $abstractArguments = $this->getMethodAbstractArguments($controller, $method, $arguments);
-        return call_user_func_array([$controller, $method], array_merge($arguments, $abstractArguments));
-    }
-
     public function getMethodAbstractArguments($abstract, $method)
     {
         $reflect = new \ReflectionClass($abstract);
