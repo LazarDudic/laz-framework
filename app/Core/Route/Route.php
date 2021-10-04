@@ -1,45 +1,49 @@
 <?php
-
+declare(strict_types=1);
 namespace App\Core\Route;
+
+use App\Http\Middleware\Interfaces\MiddlewareInterface;
 
 class Route
 {
-    private $requestMethod;
-    private $pattern;
-    private $controller;
-    private $method;
+    private string $requestMethod;
+    private string $pattern;
+    private string $controller;
+    private string $method;
+    private array $middlewares;
 
-    public function __construct($requestMethod, $pattern, $controller, $method)
+    public function __construct($requestMethod, $pattern, $controller, $method, $middlewares = [])
     {
         $this->requestMethod = $requestMethod;
         $this->pattern = '|^' . $pattern . '$|';;
         $this->controller = $controller;
         $this->method = $method;
+        $this->middlewares = $middlewares;
     }
 
-    public static function get($pattern, $controller,  $method)
+    public static function get($pattern, $controller,  $method, $middleware = []) : Route
     {
-        return new Route('GET', $pattern, $controller, $method);
+        return new Route('GET', $pattern, $controller, $method, $middleware);
     }
 
-    public static function post($pattern, $controller, $method)
+    public static function post($pattern, $controller, $method, $middleware = []) : Route
     {
-        return new Route('POST', $pattern, $controller, $method);
+        return new Route('POST', $pattern, $controller, $method, $middleware);
     }
 
-    public static function put($pattern, $controller, $method)
+    public static function put($pattern, $controller, $method, $middleware = []) : Route
     {
-        return new Route('PUT', $pattern, $controller, $method);
+        return new Route('PUT', $pattern, $controller, $method, $middleware);
     }
 
-    public static function patch($pattern, $controller, $method)
+    public static function patch($pattern, $controller, $method, $middleware = []) : Route
     {
-        return new Route('PATCH', $pattern, $controller, $method);
+        return new Route('PATCH', $pattern, $controller, $method, $middleware);
     }
 
-    public static function delete($pattern, $controller, $method)
+    public static function delete($pattern, $controller, $method, $middleware = []) : Route
     {
-        return new Route('DELETE', $pattern, $controller, $method);
+        return new Route('DELETE', $pattern, $controller, $method, $middleware);
     }
 
     public function match($url, $requestMethod)
@@ -59,6 +63,11 @@ class Route
     public function getMethodName()
     {
         return $this->method;
+    }
+
+    public function getMiddlewares()
+    {
+        return $this->middlewares;
     }
 
     public function getArguments($url)

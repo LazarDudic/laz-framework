@@ -35,6 +35,7 @@ class App
 
         try {
             $route = $this->router->getMatchedRoute($request->urlWithoutQuery(), $request->method());
+            $this->callMiddlewares($route->getMiddlewares(), $request);
             $controler = $this->container->make($route->getControllerName());
             $response = $this->callControllerMethod(
                 $controler, 
@@ -59,10 +60,19 @@ class App
         echo $twig->render($response['path'], $response['data']);
     }
 
-    private function callControllerMethod(Controller $controller, $method, $arguments) 
+    private function callControllerMethod($controller, $method, $arguments) 
     {
         $abstractArguments = $this->container->getMethodAbstractArguments($controller, $method, $arguments);
         return call_user_func_array([$controller, $method], array_merge($arguments, $abstractArguments));
+    }
+
+    private function callMiddlewares(array $middlewares, Request $request) 
+    {
+        if (count($middlewares)) {
+            foreach ($middlewares as $middleware) {
+                (new $middleware())->handle($request);
+            }
+        }
     }
 }
 ?>
