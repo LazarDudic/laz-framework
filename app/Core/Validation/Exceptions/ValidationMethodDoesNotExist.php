@@ -1,7 +1,7 @@
 <?php
-namespace App\Core\Exceptions;
+namespace App\Core\Validation\Exceptions;
 
-class RouteNotFound extends \Exception
+class ValidationRuleDoesNotExist extends \Exception
 {
     public function __construct($message) {
         $this->message = $message;

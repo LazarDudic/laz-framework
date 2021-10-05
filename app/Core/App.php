@@ -6,7 +6,7 @@ use App\Core\Route\Router;
 use App\Core\Request\Request;
 use App\Controllers\Controller;
 use App\Core\DIContainer\Container;
-use App\Core\Exceptions\RouteNotFound;
+use App\Core\Route\Exceptions\RouteNotFound;
 
 class App
 {
